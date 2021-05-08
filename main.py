@@ -40,8 +40,7 @@ def predict_salary(salary_from, salary_to):
         return salary_from * 1.2
 
 
-def add_statistic(programming_language, vacancies,
-                  vacancies_processed, average_salary):
+def add_statistic(vacancies, vacancies_processed, average_salary):
     statistic = {
         "vacancies_found": vacancies,
         "vacancies_processed": vacancies_processed,
