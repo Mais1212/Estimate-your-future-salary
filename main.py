@@ -55,7 +55,7 @@ def get_sj_pages(secret_key, programming_language):
     api_url = "https://api.superjob.ru/2.0/vacancies/"
     headers = {"X-Api-App-Id": secret_key}
     pages_number = 10
-    number_vacancies_per_page  = 10
+    number_vacancies_per_page = 10
 
     for page in range(pages_number):
         params = {
@@ -171,7 +171,7 @@ def get_sj_statistics(programming_language, sj_statistics, secret_key):
 
 def main():
     load_dotenv()
-    secret_key = os.getenv("SECRET_KEY")
+    secret_key = os.getenv("SUPER_JOB_KEY")
     sj_statistics = {}
     hh_statistics = {}
     for programming_language in PROGRAMMING_LANGUAGES:
