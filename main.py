@@ -33,12 +33,11 @@ def create_table(site_statistics, title):
 
 def predict_salary(salary_from, salary_to):
     if salary_from and salary_to:
-        average_salary = salary_from + salary_to / 2
+        return (salary_from + salary_to) / 2
     elif salary_to:
-        average_salary = salary_to * 0.8
+        return salary_to * 0.8
     elif salary_from:
-        average_salary = salary_from * 1.2
-    return average_salary
+        return salary_from * 1.2
 
 
 def add_statistic(programming_language, vacancies,
