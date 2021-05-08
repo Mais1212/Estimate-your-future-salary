@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 from terminaltables import SingleTable
 
 PROGRAMMING_LANGUAGES = [
-    "JavaScript", "Java", "C#",
+    "Golang", "Java", "C#",
     "Python", "Ruby", "Go",
     "PHP", "C++", "Swift"
 ]
@@ -55,14 +55,14 @@ def get_sj_pages(secret_key, programming_language):
     api_url = "https://api.superjob.ru/2.0/vacancies/"
     headers = {"X-Api-App-Id": secret_key}
     pages_number = 10
-    count_vacancies_per_page = 10
+    number_vacancies_per_page  = 10
 
     for page in range(pages_number):
         params = {
             "keywords[1][keys]": programming_language,
             "town": "Москва",
             "page": page,
-            "count": count_vacancies_per_page
+            "count": number_vacancies_per_page 
         }
         vacancies_pages.append(requests.get(
             api_url, params, headers=headers).json())
@@ -144,7 +144,6 @@ def get_hh_statistics(programming_language, hh_statistics):
         vacancies_hh_pages)
 
     hh_statistics[programming_language] = add_statistic(
-        programming_language,
         vacancies_hh_found,
         vacancies_hh_processed,
         average_hh_salary
@@ -163,7 +162,6 @@ def get_sj_statistics(programming_language, sj_statistics, secret_key):
     vacancies_sj_found = vacancies_sj_pages[0]["total"]
 
     sj_statistics[programming_language] = add_statistic(
-        programming_language,
         vacancies_sj_found,
         vacancies_sj_processed,
         average_sj_salary
