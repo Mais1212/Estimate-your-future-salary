@@ -13,18 +13,18 @@ PROGRAMMING_LANGUAGES = [
 
 def create_table(site_statistics, title):
     statistics_table = [(
-        'Язык программирования',
-        'Вакансий найдено',
-        'Вакансий обработано',
-        'Средняя зарплата'
+        "Язык программирования",
+        "Вакансий найдено",
+        "Вакансий обработано",
+        "Средняя зарплата"
     )]
 
     for language, statistics in site_statistics.items():
         language_statistics = [
             language,
-            statistics['vacancies_found'],
-            statistics['vacancies_processed'],
-            statistics['average_salary']
+            statistics["vacancies_found"],
+            statistics["vacancies_processed"],
+            statistics["average_salary"]
         ]
         statistics_table.append(language_statistics)
     table = SingleTable(statistics_table, title)
@@ -55,7 +55,7 @@ def add_statistic(programming_language, vacancies,
 def get_sj_pages(secret_key, programming_language):
     vacancies_pages = []
     api_url = "https://api.superjob.ru/2.0/vacancies/"
-    headers = {'X-Api-App-Id': secret_key}
+    headers = {"X-Api-App-Id": secret_key}
     pages_number = 10
     count_vacancies_per_page = 10
 
@@ -97,7 +97,7 @@ def predict_rub_salary_sj(vacancies_pages):
     for vacancies in vacancies_pages:
         for vacancy in vacancies["objects"]:
 
-            if vacancy['currency'] != "rub":
+            if vacancy["currency"] != "rub":
                 continue
 
             salary_from = vacancy["payment_from"]
@@ -162,7 +162,7 @@ def get_sj_statistics(programming_language, sj_statistics, secret_key):
     average_sj_salary, vacancies_sj_processed = predict_rub_salary_sj(
         vacancies_sj_pages)
 
-    vacancies_sj_found = vacancies_sj_pages[0]['total']
+    vacancies_sj_found = vacancies_sj_pages[0]["total"]
 
     sj_statistics[programming_language] = add_statistic(
         programming_language,
@@ -190,5 +190,5 @@ def main():
     print(hh_table.table)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
