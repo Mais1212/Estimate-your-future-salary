@@ -1,11 +1,13 @@
 import os
+from itertools import count
 
 import requests
 from dotenv import load_dotenv
+from requests.models import Response
 from terminaltables import SingleTable
 
 PROGRAMMING_LANGUAGES = [
-    "Golang", "Java", "C#",
+    "javascript", "Java", "C#",
     "Python", "Ruby", "Go",
     "PHP", "C++", "Swift"
 ]
@@ -54,19 +56,23 @@ def get_sj_pages(secret_key, programming_language):
     vacancies_pages = []
     api_url = "https://api.superjob.ru/2.0/vacancies/"
     headers = {"X-Api-App-Id": secret_key}
-    pages_number = 10
     number_vacancies_per_page = 10
 
-    for page in range(pages_number):
-        params = {
-            "keywords[1][keys]": programming_language,
-            "town": "Москва",
-            "page": page,
-            "count": number_vacancies_per_page 
-        }
-        vacancies_pages.append(requests.get(
-            api_url, params, headers=headers).json())
-    return vacancies_pages
+    params = {
+        "keywords[1][keys]": programming_language,
+        "town": "Москва",
+        "page": None,
+        "count": number_vacancies_per_page
+    }
+
+    for page in count():
+        params["page"] = page
+
+        response = requests.get(api_url, params, headers=headers).json()
+
+        vacancies_pages.append(response)
+        if not response["more"]:
+            return vacancies_pages
 
 
 def get_hh_pages(programming_language):
@@ -75,18 +81,23 @@ def get_hh_pages(programming_language):
 
     moscow_area = 1
     period_days = 30
-    pages_number = 100
 
-    for page in range(pages_number):
-        params = {
-            "text": programming_language,
-            "area": moscow_area,
-            "period": period_days,
-            "page": page
-        }
+    params = {
+        "text": programming_language,
+        "area": moscow_area,
+        "period": period_days,
+        "page": None
+    }
 
-        vacancies_pages.append(requests.get(api_url, params).json())
-    return vacancies_pages
+    for page in count():
+
+        params["page"] = page
+        response = requests.get(api_url, params).json()
+        last_page = response["pages"]-1
+        vacancies_pages.append(response)
+
+        if page == last_page:
+            return vacancies_pages
 
 
 def predict_rub_salary_sj(vacancies_pages):
@@ -124,13 +135,10 @@ def predict_rub_salary_hh(vacancies_list):
 
             salary_from = vacancy["salary"]["from"]
             salary_to = vacancy["salary"]["to"]
-
             average_salary = predict_salary(salary_from, salary_to)
-
             vacancies_processed.append(int(average_salary))
 
     average_salary = int(sum(vacancies_processed) / len(vacancies_processed))
-
     vacancies_processed = len(vacancies_processed)
 
     return average_salary, vacancies_processed
