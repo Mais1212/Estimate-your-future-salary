@@ -67,7 +67,9 @@ def get_sj_pages(secret_key, programming_language):
     for page in count():
         params["page"] = page
 
-        response = requests.get(api_url, params, headers=headers).json()
+        response = requests.get(api_url, params, headers=headers)
+        response.raise_for_status()
+        response = response.json()
 
         vacancies_pages.append(response)
         if not response["more"]:
@@ -91,7 +93,9 @@ def get_hh_pages(programming_language):
     for page in count():
 
         params["page"] = page
-        response = requests.get(api_url, params).json()
+        response = requests.get(api_url, params)
+        response.raise_for_status()
+        response = response.json()
         last_page = response["pages"]-1
         vacancies_pages.append(response)
 
@@ -182,10 +186,13 @@ def main():
     sj_statistics = {}
     hh_statistics = {}
     for programming_language in PROGRAMMING_LANGUAGES:
-        sj_statistics = get_sj_statistics(
-            programming_language, sj_statistics, secret_key)
+        try:
+            sj_statistics = get_sj_statistics(
+                programming_language, sj_statistics, secret_key)
 
-        hh_statistics = get_hh_statistics(programming_language, hh_statistics)
+            hh_statistics = get_hh_statistics(programming_language, hh_statistics)
+        except requests.exceptions.HTTPError as erorr:
+            print(erorr)
 
     sj_table = create_table(sj_statistics, "SuperJob")
     hh_table = create_table(hh_statistics, "HeadHunter")
