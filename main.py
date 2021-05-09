@@ -3,7 +3,6 @@ from itertools import count
 
 import requests
 from dotenv import load_dotenv
-from requests.models import Response
 from terminaltables import SingleTable
 
 PROGRAMMING_LANGUAGES = [
