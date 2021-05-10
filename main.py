@@ -147,52 +147,52 @@ def predict_rub_salary_hh(vacancies_list):
     return average_salary, vacancies_processed
 
 
-def get_hh_statistics(programming_language, hh_statistics):
+def get_hh_statistics():
+    hh_statistics = {}
+    for programming_language in PROGRAMMING_LANGUAGES:
 
-    vacancies_hh_pages = get_hh_pages(programming_language)
-    vacancies_hh_found = vacancies_hh_pages[0]["found"]
-    average_hh_salary, vacancies_hh_processed = predict_rub_salary_hh(
-        vacancies_hh_pages)
+        vacancies_hh_pages = get_hh_pages(programming_language)
+        vacancies_hh_found = vacancies_hh_pages[0]["found"]
+        average_hh_salary, vacancies_hh_processed = predict_rub_salary_hh(
+            vacancies_hh_pages)
 
-    hh_statistics[programming_language] = add_statistic(
-        vacancies_hh_found,
-        vacancies_hh_processed,
-        average_hh_salary
-    )
+        hh_statistics[programming_language] = add_statistic(
+            vacancies_hh_found,
+            vacancies_hh_processed,
+            average_hh_salary
+        )
     return hh_statistics
 
 
-def get_sj_statistics(programming_language, sj_statistics, secret_key):
+def get_sj_statistics(secret_key):
+    sj_statistics = {}
 
-    vacancies_sj_pages = get_sj_pages(
-        secret_key, programming_language)
+    for programming_language in PROGRAMMING_LANGUAGES:
+        vacancies_sj_pages = get_sj_pages(
+            secret_key, programming_language)
 
-    average_sj_salary, vacancies_sj_processed = predict_rub_salary_sj(
-        vacancies_sj_pages)
+        average_sj_salary, vacancies_sj_processed = predict_rub_salary_sj(
+            vacancies_sj_pages)
 
-    vacancies_sj_found = vacancies_sj_pages[0]["total"]
+        vacancies_sj_found = vacancies_sj_pages[0]["total"]
 
-    sj_statistics[programming_language] = add_statistic(
-        vacancies_sj_found,
-        vacancies_sj_processed,
-        average_sj_salary
-    )
+        sj_statistics[programming_language] = add_statistic(
+            vacancies_sj_found,
+            vacancies_sj_processed,
+            average_sj_salary
+        )
     return sj_statistics
 
 
 def main():
     load_dotenv()
     secret_key = os.getenv("SUPER_JOB_KEY")
-    sj_statistics = {}
-    hh_statistics = {}
-    for programming_language in PROGRAMMING_LANGUAGES:
-        try:
-            sj_statistics = get_sj_statistics(
-                programming_language, sj_statistics, secret_key)
 
-            hh_statistics = get_hh_statistics(programming_language, hh_statistics)
-        except requests.exceptions.HTTPError as erorr:
-            print(erorr)
+    try:
+        sj_statistics = get_sj_statistics(secret_key)
+        hh_statistics = get_hh_statistics()
+    except requests.exceptions.HTTPError as erorr:
+        print(erorr)
 
     sj_table = create_table(sj_statistics, "SuperJob")
     hh_table = create_table(hh_statistics, "HeadHunter")
