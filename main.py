@@ -128,7 +128,7 @@ def predict_rub_salary_hh(vacancies_list):
     processed_vacancies = []
     for vacancies in vacancies_list:
         for vacancy in vacancies["items"]:
-            if vacancy["salary"]:
+            if not vacancy["salary"]:
                 continue
 
             if vacancy["salary"]["currency"] != "RUR":
