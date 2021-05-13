@@ -146,40 +146,40 @@ def predict_rub_salary_hh(vacancies_list):
 
 
 def get_hh_statistics():
-    hh_statistics = {}
+    statistics = {}
     for programming_language in PROGRAMMING_LANGUAGES:
 
-        vacancies_hh_pages = get_hh_pages(programming_language)
-        vacancies_hh_found = vacancies_hh_pages[0]["found"]
-        average_hh_salary, vacancies_hh_processed = predict_rub_salary_hh(
-            vacancies_hh_pages)
+        vacancies_pages = get_hh_pages(programming_language)
+        vacancies_found = vacancies_pages[0]["found"]
+        average_salary, vacancies_processed = predict_rub_salary_hh(
+            vacancies_pages)
 
-        hh_statistics[programming_language] = add_statistic(
-            vacancies_hh_found,
-            vacancies_hh_processed,
-            average_hh_salary
+        statistics[programming_language] = add_statistic(
+            vacancies_found,
+            vacancies_processed,
+            average_salary
         )
-    return hh_statistics
+    return statistics
 
 
 def get_sj_statistics(secret_key):
-    sj_statistics = {}
+    statistics = {}
 
     for programming_language in PROGRAMMING_LANGUAGES:
-        vacancies_sj_pages = get_sj_pages(
+        vacancies_pages = get_sj_pages(
             secret_key, programming_language)
 
-        average_sj_salary, vacancies_sj_processed = predict_rub_salary_sj(
-            vacancies_sj_pages)
+        average_salary, vacancies_processed = predict_rub_salary_sj(
+            vacancies_pages)
 
-        vacancies_sj_found = vacancies_sj_pages[0]["total"]
+        vacancies_found = vacancies_pages[0]["total"]
 
-        sj_statistics[programming_language] = add_statistic(
-            vacancies_sj_found,
-            vacancies_sj_processed,
-            average_sj_salary
+        statistics[programming_language] = add_statistic(
+            vacancies_found,
+            vacancies_processed,
+            average_salary
         )
-    return sj_statistics
+    return statistics
 
 
 def main():
