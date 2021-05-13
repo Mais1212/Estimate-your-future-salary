@@ -60,7 +60,6 @@ def get_sj_pages(secret_key, programming_language):
     params = {
         "keywords[1][keys]": programming_language,
         "town": "Москва",
-        "page": None,
         "count": number_vacancies_per_page
     }
 
@@ -87,7 +86,6 @@ def get_hh_pages(programming_language):
         "text": programming_language,
         "area": moscow_area,
         "period": period_days,
-        "page": None
     }
 
     for page in count():
