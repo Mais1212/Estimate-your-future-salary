@@ -145,9 +145,9 @@ def predict_rub_salary_hh(vacancies_list):
     return average_salary, vacancies_processed
 
 
-def get_hh_statistics():
+def get_hh_statistics(programming_languages):
     statistics = {}
-    for programming_language in PROGRAMMING_LANGUAGES:
+    for programming_language in programming_languages:
 
         vacancies_pages = get_hh_pages(programming_language)
         vacancies_found = vacancies_pages[0]["found"]
@@ -162,10 +162,10 @@ def get_hh_statistics():
     return statistics
 
 
-def get_sj_statistics(secret_key):
+def get_sj_statistics(secret_key, programming_languages):
     statistics = {}
 
-    for programming_language in PROGRAMMING_LANGUAGES:
+    for programming_language in programming_languages:
         vacancies_pages = get_sj_pages(
             secret_key, programming_language)
 
@@ -187,8 +187,8 @@ def main():
     secret_key = os.getenv("SUPER_JOB_KEY")
 
     try:
-        sj_statistics = get_sj_statistics(secret_key)
-        hh_statistics = get_hh_statistics()
+        sj_statistics = get_sj_statistics(secret_key, PROGRAMMING_LANGUAGES)
+        hh_statistics = get_hh_statistics(PROGRAMMING_LANGUAGES)
     except requests.exceptions.HTTPError as erorr:
         print(erorr)
 
