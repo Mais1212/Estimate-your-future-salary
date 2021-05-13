@@ -24,7 +24,7 @@ def create_table(site_statistics, title):
         language_statistics = [
             language,
             statistics["vacancies_found"],
-            statistics["vacancies_processed"],
+            statistics["processed_vacancies"],
             statistics["average_salary"]
         ]
         statistics_table.append(language_statistics)
@@ -41,10 +41,10 @@ def predict_salary(salary_from, salary_to):
         return salary_from * 1.2
 
 
-def format_statistic(vacancies, vacancies_processed, average_salary):
+def format_statistic(vacancies, processed_vacancies, average_salary):
     statistic = {
         "vacancies_found": vacancies,
-        "vacancies_processed": vacancies_processed,
+        "processed_vacancies": processed_vacancies,
         "average_salary": average_salary
     }
 
@@ -55,12 +55,12 @@ def get_sj_pages(secret_key, programming_language):
     vacancies_pages = []
     api_url = "https://api.superjob.ru/2.0/vacancies/"
     headers = {"X-Api-App-Id": secret_key}
-    number_vacancies_per_page = 10
+    vacancies_per_page_number = 10
 
     params = {
         "keywords[1][keys]": programming_language,
         "town": "Москва",
-        "count": number_vacancies_per_page
+        "count": vacancies_per_page_number
     }
 
     for page in count():
@@ -102,7 +102,7 @@ def get_hh_pages(programming_language):
 
 
 def predict_rub_salary_sj(vacancies_pages):
-    vacancies_processed = []
+    average_salaries = []
 
     for vacancies in vacancies_pages:
         for vacancy in vacancies["objects"]:
@@ -117,15 +117,15 @@ def predict_rub_salary_sj(vacancies_pages):
                 continue
 
             average_salary = predict_salary(salary_from, salary_to)
-            vacancies_processed.append(int(average_salary))
-    average_salary = int(sum(vacancies_processed) / len(vacancies_processed))
-    vacancies_processed = len(vacancies_processed)
+            average_salaries.append(int(average_salary))
+    processed_vacancies = len(average_salaries)
+    average_salary = int(sum(average_salaries) / processed_vacancies)
 
-    return average_salary, vacancies_processed
+    return average_salary, processed_vacancies
 
 
 def predict_rub_salary_hh(vacancies_list):
-    vacancies_processed = []
+    processed_vacancies = []
     for vacancies in vacancies_list:
         for vacancy in vacancies["items"]:
             if vacancy["salary"]:
@@ -137,12 +137,12 @@ def predict_rub_salary_hh(vacancies_list):
             salary_from = vacancy["salary"]["from"]
             salary_to = vacancy["salary"]["to"]
             average_salary = predict_salary(salary_from, salary_to)
-            vacancies_processed.append(int(average_salary))
+            processed_vacancies.append(int(average_salary))
 
-    average_salary = int(sum(vacancies_processed) / len(vacancies_processed))
-    vacancies_processed = len(vacancies_processed)
+    average_salary = int(sum(processed_vacancies) / len(processed_vacancies))
+    processed_vacancies = len(processed_vacancies)
 
-    return average_salary, vacancies_processed
+    return average_salary, processed_vacancies
 
 
 def get_hh_statistics(programming_languages):
@@ -151,12 +151,12 @@ def get_hh_statistics(programming_languages):
 
         vacancies_pages = get_hh_pages(programming_language)
         vacancies_found = vacancies_pages[0]["found"]
-        average_salary, vacancies_processed = predict_rub_salary_hh(
+        average_salary, processed_vacancies = predict_rub_salary_hh(
             vacancies_pages)
 
         statistics[programming_language] = format_statistic(
             vacancies_found,
-            vacancies_processed,
+            processed_vacancies,
             average_salary
         )
     return statistics
@@ -169,14 +169,14 @@ def get_sj_statistics(secret_key, programming_languages):
         vacancies_pages = get_sj_pages(
             secret_key, programming_language)
 
-        average_salary, vacancies_processed = predict_rub_salary_sj(
+        average_salary, processed_vacancies = predict_rub_salary_sj(
             vacancies_pages)
 
         vacancies_found = vacancies_pages[0]["total"]
 
         statistics[programming_language] = format_statistic(
             vacancies_found,
-            vacancies_processed,
+            processed_vacancies,
             average_salary
         )
     return statistics
