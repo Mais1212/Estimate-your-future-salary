@@ -41,7 +41,7 @@ def predict_salary(salary_from, salary_to):
         return salary_from * 1.2
 
 
-def add_statistic(vacancies, vacancies_processed, average_salary):
+def format_statistic(vacancies, vacancies_processed, average_salary):
     statistic = {
         "vacancies_found": vacancies,
         "vacancies_processed": vacancies_processed,
@@ -94,7 +94,7 @@ def get_hh_pages(programming_language):
         response = requests.get(api_url, params)
         response.raise_for_status()
         response = response.json()
-        last_page = response["pages"]-1
+        last_page = response["pages"] - 1
         vacancies_pages.append(response)
 
         if page == last_page:
@@ -154,7 +154,7 @@ def get_hh_statistics(programming_languages):
         average_salary, vacancies_processed = predict_rub_salary_hh(
             vacancies_pages)
 
-        statistics[programming_language] = add_statistic(
+        statistics[programming_language] = format_statistic(
             vacancies_found,
             vacancies_processed,
             average_salary
@@ -174,7 +174,7 @@ def get_sj_statistics(secret_key, programming_languages):
 
         vacancies_found = vacancies_pages[0]["total"]
 
-        statistics[programming_language] = add_statistic(
+        statistics[programming_language] = format_statistic(
             vacancies_found,
             vacancies_processed,
             average_salary
