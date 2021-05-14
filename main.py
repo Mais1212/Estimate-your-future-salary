@@ -191,6 +191,7 @@ def main():
         hh_statistics = get_hh_statistics(PROGRAMMING_LANGUAGES)
     except requests.exceptions.HTTPError as erorr:
         print(erorr)
+        exit()
 
     sj_table = create_table(sj_statistics, "SuperJob")
     hh_table = create_table(hh_statistics, "HeadHunter")
