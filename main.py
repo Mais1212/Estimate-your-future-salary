@@ -118,15 +118,17 @@ def predict_rub_salary_sj(vacancies_pages):
 
             average_salary = predict_salary(salary_from, salary_to)
             average_salaries.append(int(average_salary))
+
     processed_vacancies = len(average_salaries)
     average_salary = int(sum(average_salaries) / processed_vacancies)
 
     return average_salary, processed_vacancies
 
 
-def predict_rub_salary_hh(vacancies_list):
-    processed_vacancies = []
-    for vacancies in vacancies_list:
+def predict_rub_salary_hh(vacancies_pages):
+    average_salaries = []
+
+    for vacancies in vacancies_pages:
         for vacancy in vacancies["items"]:
             if not vacancy["salary"]:
                 continue
@@ -137,10 +139,10 @@ def predict_rub_salary_hh(vacancies_list):
             salary_from = vacancy["salary"]["from"]
             salary_to = vacancy["salary"]["to"]
             average_salary = predict_salary(salary_from, salary_to)
-            processed_vacancies.append(int(average_salary))
+            average_salaries.append(int(average_salary))
 
-    average_salary = int(sum(processed_vacancies) / len(processed_vacancies))
-    processed_vacancies = len(processed_vacancies)
+    processed_vacancies = len(average_salaries)
+    average_salary = int(sum(average_salaries) / processed_vacancies)
 
     return average_salary, processed_vacancies
 
